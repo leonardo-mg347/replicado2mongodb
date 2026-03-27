@@ -12,16 +12,4 @@ class Pessoa extends Model
     public $timestamps = false;
 
     protected $guarded = [];
-
-    // Bloqueia escrita (read-only)
-    public function save(array $options = [])
-    {
-        throw new \Exception("Read-only model");
-    }
-
-    // Bloqueia delete (read-only)
-    public function delete()
-    {
-        throw new \Exception("Read-only model");
-    }
 }

@@ -8,12 +8,16 @@ use Illuminate\Database\Capsule\Manager as DB;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Client;
 
+use Uspdev\Replicado\Pessoa as ReplicadoPessoa;
+
 class PessoaSyncService implements SyncInterface
 {
     public function sync(): void
     {
 
-        die('rodei');
+        $r = ReplicadoPessoa::dump(5385361);
+        die($r);
+        
         // Pegar dados do replicado
         foreach ($replicado as $u) {
             $bulk[] = [
