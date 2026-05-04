@@ -1,0 +1,43 @@
+services:
+  replicado2mongo:
+    build: .
+    container_name: replicado2mongo
+    depends_on:
+      - mongodb
+    networks:
+      - replicado2mongo-network
+
+  mongodb:
+    image: mongo:7
+    container_name: replicado2mongo_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: replicado2mongo
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - replicado2mongo-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: replicado2mongo_mongo_express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: replicado2mongo
+    depends_on:
+      - mongodb
+    networks:
+      - replicado2mongo-network
+
+networks:
+  replicado2mongo-network:
+
+volumes:
+  mongodb_data:

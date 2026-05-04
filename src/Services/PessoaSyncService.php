@@ -15,8 +15,9 @@ class PessoaSyncService implements SyncInterface
     public function sync(): void
     {
 
+    die(env('REPLICADO_PASS'));
         $r = ReplicadoPessoa::dump(5385361);
-        die($r);
+        
         
         // Pegar dados do replicado
         foreach ($replicado as $u) {
