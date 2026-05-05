@@ -8,9 +8,5 @@ use Uspdev\Replicado2MongoDB\Console\SyncRunner;
 
 Bootstrap::init();
 
-die('opa');
-
-//$runner = new SyncRunner();
-//$runner->run();
-
-// 0 2 * * * /caminho/... >> /var/log/mongo-sync.log
+$runner = new SyncRunner();
+$runner->run();

@@ -4,21 +4,14 @@ namespace Uspdev\Replicado2MongoDB;
 
 use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Uspdev\Replicado\Replicado;
 
 class Bootstrap
 {
     public static function init()
     {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+        // Vamos usar createUnsafeImmutable ao invés createImmutable para ativar o getenv que é usado em uspdev/replicado
+        $dotenv = Dotenv::createUnsafeImmutable(__DIR__ . '/../');
         $dotenv->load();
-
-        $config = require __DIR__ . '/../config/database.php';
-
-        $capsule = new Capsule;
-
-        $capsule->addConnection($config['mongodb'], 'mongodb');
-
-        $capsule->setAsGlobal();
-        $capsule->bootEloquent();
     }
 }

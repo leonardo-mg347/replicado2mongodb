@@ -42,14 +42,15 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
 ENV PHP_MEMORY_LIMIT=512M
 RUN echo "memory_limit=${PHP_MEMORY_LIMIT}" > "${PHP_INI_DIR}/conf.d/memory.ini"
 
+# php errors (ocultar deprecated no CLI)
+RUN echo "display_errors=Off" > "${PHP_INI_DIR}/conf.d/errors.ini" \
+ && echo "log_errors=On" >> "${PHP_INI_DIR}/conf.d/errors.ini" \
+ && echo "error_reporting=E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED" >> "${PHP_INI_DIR}/conf.d/errors.ini"
+
 # Setup do diretório de trabalho
 WORKDIR /app
 
-# Na imagem php:8.5-cli, o usuário www-data e o grupo www-data são criados por padrão
-COPY --chown=www-data:www-data . .
-
-USER www-data
-
+COPY . .
 RUN composer install
 
 CMD ["tail", "-f", "/dev/null"]

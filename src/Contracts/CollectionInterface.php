@@ -2,7 +2,7 @@
 
 namespace Uspdev\Replicado2MongoDB\Contracts;
 
-interface SyncInterface
+interface CollectionInterface
 {
     public function sync(): void;
 }

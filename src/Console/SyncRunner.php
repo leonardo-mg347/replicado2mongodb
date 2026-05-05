@@ -2,38 +2,38 @@
 
 namespace Uspdev\Replicado2MongoDB\Console;
 
-use Uspdev\Replicado2MongoDB\Contracts\SyncInterface;
+use Uspdev\Replicado2MongoDB\Contracts\CollectionInterface;
 
 class SyncRunner
 {
     public function run()
     {
-        $services = $this->discoverServices();
+        $collections = $this->discoverCollections();
 
-        foreach ($services as $service) {
-            echo "Rodando: " . get_class($service) . PHP_EOL;
-            $service->sync();
+        foreach ($collections as $collection) {
+            echo "Rodando: " . get_class($collection) . PHP_EOL;
+            $collection->sync();
         }
     }
 
-    private function discoverServices(): array
+    private function discoverCollections(): array
     {
-        $services = [];
+        $collections = [];
 
-        foreach (glob(__DIR__ . '/../Services/*SyncService.php') as $file) {
+        foreach (glob(__DIR__ . '/../Collections/*Collection.php') as $file) {
             $class = $this->getClassFromFile($file);
 
-            if (is_subclass_of($class, SyncInterface::class)) {
-                $services[] = new $class;
+            if (is_subclass_of($class, CollectionInterface::class)) {
+                $collections[] = new $class;
             }
         }
 
-        return $services;
+        return $collections;
     }
 
     private function getClassFromFile($file)
     {
         $base = basename($file, '.php');
-        return "Uspdev\\Replicado2MongoDB\\Services\\$base";
+        return "Uspdev\\Replicado2MongoDB\\Collections\\$base";
     }
 }
