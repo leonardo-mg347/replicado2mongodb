@@ -1,51 +1,30 @@
-FROM php:8.5-cli
+FROM uspdev/uspdev-php-apache:8.4
 
-RUN sed -i 's|main|main non-free|' /etc/apt/sources.list.d/debian.sources && apt-get update && apt-get install -y \
-    unixodbc \
-    unixodbc-dev \
-    freetds-bin \
-    freetds-dev \
-    libicu-dev \
-    git \
-    unzip \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libssl-dev \
-    curl
+RUN sed -i 's|/var/www/html|/var/www/html/public|' \
+    /etc/apache2/sites-available/000-default.conf
 
+# bibliotecas para mongo
+RUN apt-get update && apt-get install -y \
+        libssl-dev \
+        pkg-config
+
+#essa linha é necessária?
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# php libs (Core)
-RUN docker-php-ext-install \
-    intl \
-    pdo_mysql \
-    soap \
-    zip \
-    mbstring \
-    bcmath \
-    pdo_dblib
 
 # Driver do MongoDB (Obrigatório para CLI também)
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
-# gd
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd
-
-# php memory
+# php memory  #na imagem uspdev-php-apache o limite é 512M, deve tirar?
 ENV PHP_MEMORY_LIMIT=2048M
 RUN echo "memory_limit=${PHP_MEMORY_LIMIT}" > "${PHP_INI_DIR}/conf.d/memory.ini"
 
-# Setup do diretório de trabalho
-WORKDIR /app
+USER www-data
+ 
+COPY --chown=www-data . .
 
-COPY . .
-RUN composer install
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
 
-CMD ["tail", "-f", "/dev/null"]
+CMD ["apache2-foreground"]
