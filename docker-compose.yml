@@ -1,6 +1,7 @@
 services:
-  app:
+  replicado2mongodb:
     build: .
+    image: replicado2mongodb
     container_name: replicado2mongodb
     ports:
       - "8000:80"
@@ -25,6 +26,21 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: replicado2mongodb
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - replicado2mongodb-network
+  
+  mongo-express:
+    image: mongo-express:latest
+    container_name: replicado2mongodb_mongo_express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://root:replicado2mongodb@mongodb:27017/admin
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      - mongodb
     networks:
       - replicado2mongodb-network
 

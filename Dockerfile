@@ -8,13 +8,10 @@ RUN apt-get update && apt-get install -y \
         libssl-dev \
         pkg-config
 
-#essa linha é necessária?
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Driver do MongoDB (Obrigatório para CLI também)
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
-# php memory  #na imagem uspdev-php-apache o limite é 512M, deve tirar?
+# php memory 
 ENV PHP_MEMORY_LIMIT=2048M
 RUN echo "memory_limit=${PHP_MEMORY_LIMIT}" > "${PHP_INI_DIR}/conf.d/memory.ini"
 
